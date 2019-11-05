@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+body {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.dot {
+  stroke: #000;
+}
+
+.tooltip {
+            position: absolute;
+            font-size: 12px;
+            width:  auto;
+            height: auto;
+            pointer-events: none;
+            background-color: white;
+        }
+
+</style>
+<body>
+<!--Import the D3 Library (version 4 in this case)-->
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<!--Source: https://bl.ocks.org/sebg/6f7f1dd55e0c52ce5ee0dac2b2769f4b-->
+<script>
+
+// Set up the bounds of the visualization
+var margin = {top: 20, right: 20, bottom: 30, left: 40};
+var width = 960 - margin.right - margin.left;
+var height = 500 - margin.top - margin.bottom;
+
+// Set up the scales (the pieces that will convert from the data to the screen)
+var x = d3.scaleBand()
+          .range([0, width]);
+
+var y = d3.scaleLinear()
+          .range([height, 0]);
+
+var color = d3.scaleOrdinal(d3.schemeCategory20);
+
+// Set up the scaffolds
+var xAxis = d3.axisBottom(x);
+var yAxis = d3.axisLeft(y);
+
+// Set up an SVG that gives us a canvas to draw on
+var svg = d3.select("body").append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+              .attr("transform", "translate("+margin.left + "," + margin.top + ")");
+
+// Import the data. Most of the drawing code goes in here.
+d3.csv("20171013111831-SurveyExport.csv", function(error, data) {
+  if (error) throw error;
+
+  // Loop through the data and convert the numeric columns to numbers
+  data.forEach(function(d){
+    d["User Reviews"] = +d["User Reviews"];
+
+
+    // Or using dot notation
+    //d.TFIDF = +d.TFIDF;
+    //d["Document Frequency"] = +d["Document Frequency"];
+
+    // Print things out to double check that everything looks ok
+    console.log(d);
+    })
+
+  // Create some variables that let us hold the different columns we'll want to index into
+  var y_val = "User Reviews";
+  var x_val = "Country";
+  var color_val = "Country";
+
+  // Create our aggregate data
+  var groupedData = d3.nest()
+      .key(function(d) { return d[color_val]; })
+      .rollup(function(v) { return {
+        "Country": v[0][color_val],
+        "User Reviews": d3.mean(v, function(d) { return d[y_val]; }),
+        //"GDP": d3.mean(v, function(d) { return d[y_val]; })
+      }})
+      .entries(data);
+
+  // Double check that we've got the right data
+  console.log(groupedData);
+
+  // Specify the bounds on the scales now that we have some data
+  x.domain(d3.values(groupedData).map(function(d) { return d.value[x_val];}));
+  y.domain(d3.extent(groupedData, function(d){ return d.value[y_val];})).nice();
+  color.domain(d3.extent(groupedData, function(d) { return d.value[color_val];}));
+
+
+  // Specify the parameters on the x-axis and draw it
+  svg.append("g")
+     .attr("class", "x axis")
+     .attr("transform", "translate(0," + height + ")")
+     .call(xAxis)
+     .append("text")
+        .attr("class", "label")
+        .attr("x", width)
+        .attr("y",-6)
+        .style("text-anchor", "end")
+        .text(x_val);
+
+  // Specify the parameters on the y-axis and draw it
+  svg.append("g")
+     .attr("class", "y axis")
+     .call(yAxis)
+     .append("text")
+        .attr("class", "label")
+        .attr("transform", "rotate(-90)")
+        .attr("y",6)
+        .style("text-anchor", "end")
+        .text(y_val);
+
+  // Specify the tooltip divisions
+  var tooltip = d3.select("body").append("div")
+                    .attr("class", "tooltip")
+                    .style("opacity", 0);
+
+  // Specify the parameters of a mark
+  svg.selectAll(".dot")
+     .data(groupedData)
+     .enter().append("rect")
+        .attr("class","dot")
+        .attr("width", x.bandwidth())
+        .attr("height", function(d){return height - y(d.value[y_val])})
+        .attr("x", function(d){
+          return x(d.value[x_val]);
+        })
+        .attr("y", function(d){
+          return y(d.value[y_val]);
+        })
+        .style("fill", function(d) {
+          return color(d.value[color_val]);
+        })
+        .on("mouseover", function(d) {
+          var ttText = x_val + ": " + d.value[x_val] + "<br>";
+          ttText += y_val + ": " + d.value[y_val] + "<br>";
+          ttText += color_val + ": " + d.value[color_val];
+          tooltip.html(ttText)
+              .style("left", (d3.event.pageX + 15) + "px")
+              .style("top", (d3.event.pageY - 28) + "px")
+            .transition()
+              .duration(200) // ms
+              .style("opacity", .9) // started as 0!
+        })
+        .on("mouseout", function(d){
+          tooltip.transition()
+                  .duration(300)
+                  .style("opacity", 0)
+        })
+        svg.append("text")
+          .attr("class", "x label")
+          .attr("text-anchor", "axisBottom")
+          .attr("x", width - 450)
+          .attr("y", height+28)
+          .style("text-anchor", "middle")
+          .text("Average Ranking of Convenience");
+
+
+          svg.append("text")
+              .attr("class", "y label")
+              .attr("text-anchor", "end")
+              .attr("y", height-450)
+              .attr("dy", "-33")
+              .attr("transform", "rotate(-90)")
+              .text("Average Ranking of Privacy");
+
+});
+
+</script>
