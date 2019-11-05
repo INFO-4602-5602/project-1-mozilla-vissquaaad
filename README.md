@@ -1,3 +1,79 @@
+Mozilla Survey Group Project
+
+Instructor: Danielle Albers Szafir 
+
+INFO 4602-001: Information Visualization
+
+Group Members: Elise Bergmann, Savannah Bornstein, Joshua Paup, Conner Sinjem
+
+VISUALIZATION #1 CATEGORICAL
+
+Information:
+
+Overview: This specific visualization focuses on comparing the average ranking for user-review based on a specific country. In the Mozilla survey, one of the questions asks individuals to rank aspects (such Price, Features, Safety, User Reviews, and many more), based on the order of importance that is considered when making a purchase of a smart device, (i.e. TV or smartphone).
+
+Interactions: By hovering over a certain bar in the bar graph, a user can specifically identify the country associated with a particular bar. This allows the user to not only be able to see the overall picture of different regional trends, based on the bar’s color, but also have the ability to view which bar is which country to get more specific data based on particular country.
+
+Preprocesses: In terms of Preattention, gist is utilized by the colorful bar graph being the quick picture that is first observable in the visualization; the graph is very tight with numerous bars being presented to represent all included countries. Gestalts are utilized by the grouping of the data being portrayed through different colors that identify specific regions that each country is a part of.
+
+Tasks: By visualizing countries based on the average ranking of user reviews in purchasing decisions, the viewer of the visualization can interpret different trends that exist in buying behaviors based on different countries. By quickly being able to identify which countries have a lower number out of 10, it can be interpreted that the lower the y-axis for a specific bar, the higher the priority of relying on user reviews when making a purchase. For example, an average ranking of 1 for a country would indicate that that specific country, on average, most highly prioritizes referencing user reviews before purchasing a smart device.
+
+Design Process:
+
+Designing: The actual design of this visualization encompassed determining the most effective way of showcasing the average ranking for user reviews based on the specific country; based on this task, we chose to use a bar graph. Bar graphs are a fantastic way of comparing a certain attribute among different groups; in this case, the attribute is the average ranking of user reviews and the groups are different countries.This visualization also allows individuals to see trends of specific regions based on the color of the bars.
+
+Building: The building process of this visualization involved using techniques learned in class, utilizing templates created/given in class, as well as conducting online research to find new and unique ways of creating our visualization that may not have been covered in the classroom lectures. 
+
+Refining: Refining was definitely the most time consuming/difficult part of creating this visualization. Many aspects of the creation process involved trial and error in terms of trying to incorporate as many creative aspects as possible while also having realistic expectations for what we could develop. 
+
+Reasoning: This visual representation was chosen because it is interesting to compare trends among different countries in terms of prioritizing considerations that go into purchasing a smart device. By grouping by country, we can specifically see which countries more highly prioritize referencing user reviews when making purchasing decisions for smart devices. 
+
+
+VISUALIZATION #2 QUANTITATIVE
+
+Information:
+
+Overview: This visualization first divides users by how they answered the question, “What is your biggest fear as we move towards a more connected future?”. It further averages the privacy and convenience responses, based on the responses to that initial question. Therefore, each answer option to that initial question is listed in the legend, and each point represents those answers in relation to the averages expressed through privacy and convenience. 
+
+Interactions: With this visualization, a viewer can hover over a given point to enlarge it. Additionally when a viewer hovers, all of the necessary information regarding the average privacy and convenience responses clearly pops up as a text box. 
+
+Preprocesses: When first viewing this visualization a viewer can quickly get the gist of how polarizing the responses are by seeing how spread out the points are on the graph.  Gestalts were additionally utilized through color, in order for the viewer to easily be able to differentiate between points. 
+
+Tasks: This visualization allows a viewer to quickly view the average rank for privacy and convenience responses based off how respondents responded to, “What is your biggest fear as we move towards a more connected future?” This visualization additionally highlights the polarity of responses, thus showing how polarized responses regarding technology use are. 
+
+Design Process:
+
+Designing: Beginning with the excel file, we sifted through the data as a group, and highlighted areas of interest that we wished to cover in our visualizations. When thinking about visualizing the “biggest fear” question in relation to privacy and convenience, we thought a scatterplot would be visually appealing to viewers; especially since we were attempting to condense multiple elements to represent one given point.  By designing the visualization like this, a viewer is able to very clearly see the polarization occuring in the scatterplot. 
+
+Building: To build this visualization, we expanded off of the skeleton code provided for a scatterplot, using our insights from class. We gained additional insights through researching online and tweaking elements of code we found. Additionally, we read through different forums to gain more insight regarding the different ways to achieve our desired visualization.
+
+Refining: The refining process was very time consuming as we were experimenting with placement, as well as how to achieve those placements. We played around with our code and through the process, tweaked and refined our visualization to eventually achieve our desired outcome.
+ 
+Reasoning: We chose this visualization in order to provide a more simple visual, while representing more condensed information. By doing this, a viewer would not be overwhelmed by the amount of information they are receiving from a given point. But rather, it very effortlessly displays the information in a format that is clear to any viewer. Additionally, the distance between each point allows for the viewer to carefully examine each point, without being overwhelmed, or losing sight of what information is vital. 
+
+
+Team Roles
+
+Elise Bergmann: 
+This team member focused on the write up portion of the project, primarily for the second visualization details, while assisting in other aspects of the write up deliverable as well. This member also contributed towards researching areas of uncertainty in creating the second visualization and assisted Conner in anything that he needed help with in the d3 creation process.
+
+Savannah Bornstein: 
+This team member focused on the write up portion of the project, primarily for the second visualization details, while assisting in other aspects of the write-up deliverable as well. This member also contributed towards researching areas of uncertainty in creating the second visualization and assisted Joshua in anything that he needed help with in the d3 creation process.
+
+Joshua Paup: 
+This team member focused on the creation of the visualization that used categorical data. This work encompassed all design and building aspects for the actual visualization that involved the coding executed in d3. This group member ensured that all technical requirements were met by making a visualization that is interactive, has meaningful comparisons, and visualizes at least five data attributes total when compared with the other visualization created.
+
+Conner Sinjem: 
+This team member focused on the creation of the visualization that used quantitative data. This work encompassed all design and building aspects for the actual visualization that involved the coding executed in d3. This group member ensured that all technical requirements were met by making a visualization that is interactive, has meaningful comparisons, and visualizes at least five data attributes total when compared with the other visualization created.
+
+
+How to Run Our Project
+For visualization #1, open project1-2.html and the column “AE” was renamed to “User Reviews” which can be used with the original csv file.
+For visualization #2, open project1-3.html and the file mozilla.csv will be shared with you in google drive from cosi4160@colorado, (The only content changes were column header names.)
+
+
+
+------------------------------------------------------------------------------------------------
 # 4602-Mozilla
 *Due November 4, 2019 @ 11:59pm through GitHub Classroom*
 
