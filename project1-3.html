@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+body {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.dot {
+  stroke: #000;
+}
+
+.tooltip{
+  position: absolute;
+  font-size: 12px;
+  color: white;
+  width: auto;
+  height: auto;
+  pointer-events: none;
+  background-color: #a2a2a2;
+
+}
+
+</style>
+<body>
+<!--Import the D3 Library (version 4 in this case)-->
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<!--Source: https://bl.ocks.org/sebg/6f7f1dd55e0c52ce5ee0dac2b2769f4b-->
+<script>
+
+// Set up the bounds of the visualization
+var margin = {top: 20, right: 20, bottom: 30, left: 40};
+var width = 960 - margin.right - margin.left;
+var height = 500 - margin.top - margin.bottom;
+
+// Set up the scales (the pieces that will convert from the data to the screen)
+var x = d3.scaleLinear()
+          .range([1, width]);
+
+var y = d3.scaleLinear()
+          .range([height, 1]);
+
+var color = d3.scaleOrdinal(d3.schemeCategory20);
+
+// Set up the scaffolds
+var xAxis = d3.axisBottom(x);
+var yAxis = d3.axisLeft(y);
+
+// Set up an SVG that gives us a canvas to draw on
+var svg = d3.select("body").append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+              .attr("transform", "translate("+margin.left + "," + margin.top + ")");
+
+// Import the data. Most of the drawing code goes in here.
+
+d3.csv("mozilla.csv", function(error, data) {
+  if (error) throw error;
+
+  // Loop through the data and convert the numeric columns to numbers
+  data.forEach(function(d){
+    // We can treat data as an object with brackets
+    d["Privacy"] = + d["Privacy"];
+    d["Convenience"] = +d["Convenience"];
+
+
+    // Print things out to double check that everything looks ok
+    //console.log(d);
+    })
+
+  // Create some variables that let us hold the different columns we'll want to index into
+  var x_val = "Convenience";
+  var y_val = "Privacy";
+  var color_val = "What is your biggest fear as we move towards a more connected future?";
+
+
+var filterData = data.filter(function(d) { return d[color_val] !== ""; });
+
+
+
+var groupedData = d3.nest()
+.key(function(d) { return d[color_val]; })
+.rollup(function(v) { return {
+  "What is your biggest fear as we move towards a more connected future?": v[0][color_val],
+  "Convenience": d3.mean(v, function(d) { return d[x_val]; }),
+  "Privacy": d3.mean(v, function(d) { return d[y_val]})
+}}).entries(filterData);
+
+console.log(groupedData)
+
+
+
+  // Specify the bounds on the scales now that we have some data
+  x.domain(d3.extent(groupedData, function(d){ return d.value[x_val];})).nice();
+  y.domain(d3.extent(groupedData, function(d){ return d.value[y_val];})).nice();
+  color.domain(d3.extent(groupedData, function(d) { return d.value[color_val];}));
+
+  // Specify the parameters on the x-axis and draw it
+  svg.append("g")
+     .attr("class", "x axis")
+     .attr("transform", "translate(0," + height + ")")
+     .call(xAxis)
+     .append("text")
+        .attr("class", "label")
+        .attr("x", width)
+        .attr("y",-5)
+        .style("text-anchor", "end")
+        .text(x_val);
+
+  // Specify the parameters on the y-axis and draw it
+  svg.append("g")
+     .attr("class", "y axis")
+     .call(yAxis)
+     .append("text")
+        .attr("class", "label")
+        .attr("transform", "rotate(-90)")
+        .attr("y",5)
+        .style("text-anchor", "end")
+        .text(y_val);
+
+
+  svg.append("text")
+          .attr("class", "x label")
+          .attr("text-anchor", "axisBottom")
+          .attr("x", width - 450)
+          .attr("y", height+28)
+          .style("text-anchor", "middle")
+          .text("Average Ranking of Convenience");
+
+
+          svg.append("text")
+              .attr("class", "y label")
+              .attr("text-anchor", "end")
+              .attr("y", height-450)
+              .attr("dy", "-33")
+              .attr("transform", "rotate(-90)")
+              .text("Average Ranking of Privacy");
+
+  var tooltip = d3.select("body").append("div")
+    .attr("class", "tooltip")
+    .style("opacity",0);
+
+
+
+  // Specify the parameters of a mark
+  svg.selectAll(".dot")
+     .data(groupedData)
+     .enter().append("circle")
+        .attr("class","dot")
+        .attr("r", 7)
+        .attr("cx", function(d){
+          return x(d.value[x_val]);
+        })
+        .attr("cy", function(d){
+          return y(d.value[y_val]);
+        })
+        .style("fill", function(d) {
+          return color(d.value[color_val]);
+        })
+        .on("mouseover", function(d) {
+          d3.select(this)
+          .transition()
+          .duration(500)
+          .attr("r", 20)
+
+          var ttText = x_val + ": " + d.value[x_val] + "<b>";
+          ttText += y_val + ": " + d.value[y_val] + "<br>";
+          ttText += color_val + ": " + d.value[color_val];
+
+          tooltip.html(ttText)
+            .style("left", (d3.event.pageX + 15) + "px")
+            .style("top", (d3.event.pageY - 28) + "px")
+          .transition()
+            .duration(200) // ms
+            .style("opacity", .9) //stated as 0
+        })
+        .on("mouseout", function(d){
+          d3.select(this)
+          .transition()
+          .duration(550)
+          .attr("r", 7)
+
+          var ttText = x_val + ": " + d.value[x_val] + "<b>";
+          ttText += y_val + ": " + d.value[y_val] + "<br>";
+          ttText += color_val + ": " + d.value[color_val];
+
+          tooltip.html(ttText)
+            .style("left", (d3.event.pageX + 15) + "px")
+            .style("top", (d3.event.pageY - 28) + "px")
+          .transition()
+            .duration(300) // ms
+            .style("opacity", 0) //stated as 0
+
+        })
+
+        var legend = svg.selectAll(".legend")
+                        .data(color.domain())
+                        .enter().append("g")
+                        .attr("class", "legend")
+                        .attr("transform", function(d, i){
+                          return "translate(0," + (i * 20) + ")"
+                        });
+        legend.append("rect")
+              .attr("x", width - 18)
+              .attr("y", height-259)
+              .attr("width", 18)
+              .attr("height", 18)
+              .style("fill", color);
+
+        legend.append("text")
+              .attr("x", width - 24)
+              .attr("y", height-250)
+              .attr("dy", ".35em")
+              .style("text-anchor", "end")
+              .text(function(d){return d;})
+
+});
+
+</script>
